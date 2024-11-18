@@ -1,64 +1,63 @@
-import React, { act, useState } from "react";
+import React, { useTransition } from "react";
 import "./LoginSignup.css";
+import axios from "axios";
+//import Button from "@mui/material/Button";
 
 const LoginSignup = () => {
-  const [action, setAction] = useState("Sign Up");
-
+  function sendUser(e) {
+    e.preventDefault();
+    let login = document.getElementById("login").value;
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("password").value;
+    if (login === "" || email === "" || pass === "") {
+      alert("Fill in all fields");
+    } else {
+      const url = "http://localhost:80/login-signup";
+      const userData = {
+        login: login,
+        password: pass,
+        email: email,
+      };
+      axios
+        .post(url, userData)
+        .then((response) => {
+          console.log("Данные записаны в базу", response.data);
+        })
+        .catch((error) => {
+          console.log("Ашибка", error.message);
+        });
+    }
+  }
   return (
     <div className="countainer">
       <div className="header">
-        <div className="text">{action}</div>
+        <div className="text">Sign up</div>
       </div>
-      <div className="inputs">
-        <div className="input">
-          <input type="text" placeholder="Login" />
-        </div>
-      </div>
-      <div className="inputs">
-        {action === "Login" ? (
+      <form action="" method="post" onSubmit={sendUser}>
+        <div className="inputs">
           <div className="input">
-            <input type="password" placeholder="Password" />
+            <input id="login" type="text" placeholder="Login" name="login" />
           </div>
-        ) : (
+        </div>
+        <div className="inputs">
           <div className="input">
-            <input type="email" placeholder="Email" />
+            <input id="email" type="email" placeholder="Email" name="email" />
           </div>
-        )}
-      </div>
-      <div className="inputs">
-        {action === "Login" ? (
-          <div />
-        ) : (
+        </div>
+        <div className="inputs">
           <div className="input">
-            <input type="password" placeholder="Password" />
+            <input
+              id="password"
+              type="password"
+              placeholder="Password"
+              name="password"
+            />
           </div>
-        )}
-      </div>
-      {action === "Sign Up" ? (
-        <div />
-      ) : (
-        <div className="forgot-password" action>
-          Lost Password?<span> Click HERE!</span>
         </div>
-      )}
-      <div className="submit-container">
-        <div
-          className={action === "Sign Up" ? "submit gray" : "submit"}
-          onClick={() => {
-            setAction("Sign Up");
-          }}
-        >
-          Sign Up
+        <div className="submit-container">
+          <button>SignUp</button>
         </div>
-        <div
-          className={action === "Login" ? "submit gray" : "submit"}
-          onClick={() => {
-            setAction("Login");
-          }}
-        >
-          Login
-        </div>
-      </div>
+      </form>
     </div>
   );
 };
